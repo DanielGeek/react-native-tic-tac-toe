@@ -1,2 +1,3 @@
-# react-native-tic-tac-toe
-Game Tic Tac Toc with React Native, AWS Amplify and TypeScript
+#App with react native and expo
+
+## Pixel_3_API_29_1
