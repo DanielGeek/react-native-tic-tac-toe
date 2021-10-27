@@ -7,8 +7,8 @@ import styles from "./login.styles";
 export default function login(): ReactElement {
   const passwordRef = useRef<NativeTextInput | null>(null);
   const [form, setForm] = useState({
-    username: "",
-    password: ""
+    username: "test",
+    password: "12345678"
   });
   const [loading, setLoading] = useState(false);
 

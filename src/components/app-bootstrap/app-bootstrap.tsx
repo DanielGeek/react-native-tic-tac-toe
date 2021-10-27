@@ -1,10 +1,11 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode, useState, useEffect } from "react";
 import {
     useFonts,
     DeliusUnicase_400Regular,
     DeliusUnicase_700Bold
 } from "@expo-google-fonts/delius-unicase";
 // import { AppLoading } from "expo";
+import { Auth } from "aws-amplify";
 import AppLoading from 'expo-app-loading';
 
 type AppBootstrapProps = {
@@ -16,6 +17,19 @@ export default function AppBootstrap({ children }: AppBootstrapProps): ReactElem
         DeliusUnicase_400Regular,
         DeliusUnicase_700Bold
     });
+    const [authLoaded, setAuthLoaded] = useState(false);
 
-    return fontLoaded ? <>{children}</> : <AppLoading />;
+    useEffect(() => {
+        async function checkCurrentUser() {
+            try {
+                const user = await Auth.currentAuthenticatedUser();
+                console.log(user);
+            } catch (error) {
+                console.log(error);
+            }
+            setAuthLoaded(true);
+        }
+        checkCurrentUser();
+    }, [])
+    return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
 }
