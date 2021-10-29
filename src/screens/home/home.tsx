@@ -3,13 +3,15 @@ import { View, ScrollView, Image } from "react-native";
 import styles from "./home.styles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
-import { GradientBackground, Button } from "@components";
+import { GradientBackground, Button, Text } from "@components";
+import { useAuth } from "@contexts/auth-context";
 
 type HomeProps = {
       navigation: StackNavigationProp<StackNavigatorParams, "Home">
 }
 
 export default function Home({ navigation }: HomeProps): ReactElement {
+      const { user } = useAuth();
       return (
       <GradientBackground>
             <ScrollView contentContainerStyle={styles.container}>
@@ -25,16 +27,24 @@ export default function Home({ navigation }: HomeProps): ReactElement {
                         <Button style={styles.button} title="Multiplayer" />
                         <Button
                               onPress={() => {
-                                    navigation.navigate("Login");
+                                    if (user) {
+                                          
+                                    } else {
+                                          navigation.navigate("Login");
+                                    }
                               }}
                               style={styles.button}
-                              title="Login" />
+                              title={user ? "Logout" : "Login"} />
                         <Button
                               onPress={() => {
                                     navigation.navigate("Settings");
                               }}
                               style={styles.button}
                               title="Settings" />
+                              {user && (
+                                    <Text weight="400" style={styles.loggedInText}>Logged in as<Text weight="700">{user.username}</Text></Text>
+                              )
+                              }
                   </View>
             </ScrollView>
       </GradientBackground>

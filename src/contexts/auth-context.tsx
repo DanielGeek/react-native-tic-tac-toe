@@ -17,11 +17,12 @@ function useAuth(): AuthContextType {
 
 const AuthProvider = (props: {children: ReactNode}): ReactElement => {
   const [user, setUser] = useState<{[key: string]: any } | null>(null);
-  return (<AuthContext.Provider
+  return (
+          <AuthContext.Provider
             { ...props }
             value={{
-            user,
-            setUser
+              user,
+              setUser
       }}
     />
   );

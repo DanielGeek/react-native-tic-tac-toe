@@ -1,12 +1,12 @@
-import React, { ReactElement, ReactNode, useState, useEffect, createContext, Dispatch, SetStateAction } from "react";
+import React, { ReactElement, ReactNode, useState, useEffect } from "react";
 import {
     useFonts,
     DeliusUnicase_400Regular,
     DeliusUnicase_700Bold
 } from "@expo-google-fonts/delius-unicase";
-// import { AppLoading } from "expo";
-import { Auth } from "aws-amplify";
 import AppLoading from 'expo-app-loading';
+import { Auth } from "aws-amplify";
+import { useAuth } from "@contexts/auth-context";
 
 type AppBootstrapProps = {
     children: ReactNode;
@@ -18,6 +18,7 @@ export default function AppBootstrap({ children }: AppBootstrapProps): ReactElem
         DeliusUnicase_700Bold
     });
     const [authLoaded, setAuthLoaded] = useState(false);
+    const {setUser} = useAuth();
 
     useEffect(() => {
         async function checkCurrentUser() {

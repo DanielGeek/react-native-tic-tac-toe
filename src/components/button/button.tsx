@@ -6,7 +6,7 @@ import Text from "../text/text";
 
 type ButtonProps = {
   title: string;
-  loading: boolean;
+  loading?: boolean;
 } & TouchableOpacityProps;
 
 export default function Button({ title, style, loading, ...props }: ButtonProps): ReactElement {
