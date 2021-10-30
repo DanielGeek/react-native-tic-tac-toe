@@ -37,7 +37,7 @@ export default function Home({ navigation }: HomeProps): ReactElement {
                                           } catch (error) {
                                                 Alert.alert("Error!", "Error signing out!");
                                           }
-                                          setSigningOut(true);
+                                          setSigningOut(false);
                                     } else {
                                           navigation.navigate("Login");
                                     }

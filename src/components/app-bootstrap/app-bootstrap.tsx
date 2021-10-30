@@ -38,6 +38,9 @@ export default function AppBootstrap({ children }: AppBootstrapProps): ReactElem
                 case "signOut":
                     setUser(null)
                     break;
+                case "signIn":
+                    setUser(data)
+                    break;
                 default:
                     break;
             }
