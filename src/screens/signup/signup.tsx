@@ -1,16 +1,16 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput, TouchableOpacity } from 'react-native';
-import { GradientBackground, TextInput, Button, Text } from '@components';
+import { Alert, ScrollView, TextInput as NativeTextInput } from 'react-native';
+import { GradientBackground, TextInput, Button } from '@components';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
-import styles from "./login.styles";
+import styles from "./signup.styles";
 
-type LoginProps = {
-  navigation: StackNavigationProp<StackNavigatorParams, "Login">;
+type SignUpProps = {
+  navigation: StackNavigationProp<StackNavigatorParams, "SignUp">;
 };
 
-export default function login({navigation}: LoginProps): ReactElement {
+export default function SignUp({navigation}: SignUpProps): ReactElement {
   const passwordRef = useRef<NativeTextInput | null>(null);
   const [form, setForm] = useState({
     username: "test",
@@ -78,13 +78,6 @@ export default function login({navigation}: LoginProps): ReactElement {
             placeholder="Password"
         />
         <Button loading={loading} title="Login" onPress={login} />
-        <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignUp");
-          }}
-        >
-          <Text style={styles.registerLink}>Don&apos;t have an account?</Text>
-        </TouchableOpacity>
       </ScrollView>
     </GradientBackground>
   )

@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { colors } from '@utils';
 
 const styles = StyleSheet.create({
     container: {
@@ -16,6 +17,11 @@ const styles = StyleSheet.create({
     },
     button: {
         marginBottom: 20
+    },
+    loggedInText: {
+        color: colors.lightGreen,
+        textAlign: "center",
+        fontSize: 12
     }
 });
 
