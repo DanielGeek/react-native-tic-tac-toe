@@ -1,7 +1,7 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput } from 'react-native';
+import { View, Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { GradientBackground, TextInput, Button } from '@components';
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
 import styles from "./signup.styles";
@@ -11,9 +11,14 @@ type SignUpProps = {
 };
 
 export default function SignUp({navigation}: SignUpProps): ReactElement {
+  const headerHeight = useHeaderHeight();
   const passwordRef = useRef<NativeTextInput | null>(null);
+  const emailRef = useRef<NativeTextInput | null>(null);
+  const nameRef = useRef<NativeTextInput | null>(null);
   const [form, setForm] = useState({
     username: "test",
+    email:"marlene2@cchancesg.com",
+    name: "Test Name",
     password: "12345678"
   });
   const [loading, setLoading] = useState(false);
@@ -22,28 +27,19 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     setForm({...form, [key]: value});
   };
 
-  // const signup = async () => {
-  //   try {
-  //     const res = await Auth.signUp({
-  //       username: "test",
-  //       password: "12345678",
-  //       attributes: {
-  //         email: "test@test.com",
-  //         name: "Test Test"
-  //       }
-  //     })
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
-  const login = async () => {
+  const signUp = async () => {
     setLoading(true);
-    const {username, password} = form;
+    const { username, password, email, name } = form;
     try {
-        await Auth.signIn(username, password);
-        navigation.navigate("Home");
+        const res = await Auth.signUp({
+          username,
+          password,
+          attributes: {
+            email,
+            name
+          }
+        });
+        console.log(res);
     } catch (error) {
         Alert.alert("Error!", error.message || "An error has occurred!");
     }
@@ -51,34 +47,67 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
   }
   return (
     <GradientBackground>
-      <ScrollView contentContainerStyle={styles.contianer}>
-        <TextInput
-            value={form.username}
-            onChangeText={(value) => {
-              setFormInput("username", value)
-            }}
-            returnKeyType="next"
-            placeholder="Username"
-            style={{
-              marginBottom: 20
-            }}
-            onSubmitEditing={() => {
-              passwordRef.current?.focus();
-            }}
-        />
-        <TextInput
-            value={form.password}
-            onChangeText={(value) => {
-              setFormInput("password", value)
-            }}
-            style={{ marginBottom: 30 }}
-            ref={passwordRef}
-            returnKeyType="done"
-            secureTextEntry
-            placeholder="Password"
-        />
-        <Button loading={loading} title="Login" onPress={login} />
-      </ScrollView>
+      <KeyboardAvoidingView keyboardVerticalOffset={headerHeight} behavior={ Platform.OS === "ios" ? "padding": "height" } style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.contianer}>
+          <TextInput
+              value={form.username}
+              onChangeText={(value) => {
+                setFormInput("username", value)
+              }}
+              returnKeyType="next"
+              placeholder="Username"
+              style={{
+                marginBottom: 20
+              }}
+              onSubmitEditing={() => {
+                nameRef.current?.focus();
+              }}
+          />
+          <TextInput
+              ref={nameRef}
+              value={form.name}
+              onChangeText={(value) => {
+                setFormInput("name", value)
+              }}
+              returnKeyType="next"
+              placeholder="Name"
+              style={{
+                marginBottom: 20
+              }}
+              onSubmitEditing={() => {
+                emailRef.current?.focus();
+              }}
+          />
+          <TextInput
+              keyboardType="email-address"
+              ref={emailRef}
+              value={form.email}
+              onChangeText={(value) => {
+                setFormInput("email", value)
+              }}
+              returnKeyType="next"
+              placeholder="Email"
+              style={{
+                marginBottom: 20
+              }}
+              onSubmitEditing={() => {
+                passwordRef.current?.focus();
+              }}
+          />
+          <TextInput
+              value={form.password}
+              onChangeText={(value) => {
+                setFormInput("password", value)
+              }}
+              style={{ marginBottom: 30 }}
+              ref={passwordRef}
+              returnKeyType="done"
+              secureTextEntry
+              placeholder="Password"
+          />
+          <Button loading={loading} title="Sign-Up" onPress={signUp} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </GradientBackground>
   )
 }
