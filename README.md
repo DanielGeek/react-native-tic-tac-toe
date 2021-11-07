@@ -1,4 +1,4 @@
-#App with react native and expo
+#App with React Native and expo
 
 ## Pixel_3_API_29_1
 
