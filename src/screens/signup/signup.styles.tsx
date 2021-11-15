@@ -7,7 +7,13 @@ const styles = StyleSheet.create({
   },
   borderStyleBase: {
     width: 30,
-    height: 45
+    height: 45,
+    borderColor: "#03DAC6",
+    borderWidth: 1,
+    borderBottomWidth: 1,
+    flexDirection: "column",
+    flexWrap: "wrap",
+    marginTop: 10
   },
   borderStyleHighLighted: {
     borderColor: "#03DAC6",
