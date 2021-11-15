@@ -4,8 +4,9 @@ import { GradientBackground, TextInput, Button } from '@components';
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
-import OTPInputView from '@twotalltotems/react-native-otp-input';
+import OtpInputs from 'react-native-otp-inputs';
 import styles from "./signup.styles";
+
 
 type SignUpProps = {
   navigation: StackNavigationProp<StackNavigatorParams, "SignUp">;
@@ -64,7 +65,11 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
                 nameRef.current?.focus();
               }}
           />
-          <OTPInputView pinCount={4} />
+          <OtpInputs
+            style={styles.borderStyleBase}
+            handleChange={(code) => console.log(code)}
+            numberOfInputs={6}
+          />
           <TextInput
               ref={nameRef}
               value={form.name}
