@@ -16,29 +16,32 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.lightGreen,
   },
-  otpActiveInputBox: {
-    borderWidth: 1,
-    borderColor: colors.lightPurple
-  },
-  borderStyleBase: {
-    width: 30,
-    height: 45
-  },
+  optText: {
+    color: colors.lightGreen
+  }
+  // otpActiveInputBox: {
+  //   borderWidth: 1,
+  //   borderColor: colors.lightPurple
+  // },
+  // borderStyleBase: {
+  //   width: 30,
+  //   height: 45
+  // },
 
-  borderStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
+  // borderStyleHighLighted: {
+  //   borderColor: "#03DAC6",
+  // },
 
-  underlineStyleBase: {
-    width: 30,
-    height: 45,
-    borderWidth: 0,
-    borderBottomWidth: 1,
-  },
+  // underlineStyleBase: {
+  //   width: 30,
+  //   height: 45,
+  //   borderWidth: 0,
+  //   borderBottomWidth: 1,
+  // },
 
-  underlineStyleHighLighted: {
-    borderColor: "#03DAC6",
-  },
+  // underlineStyleHighLighted: {
+  //   borderColor: "#03DAC6",
+  // },
 });
 
 export default styles;

@@ -1,5 +1,5 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { GradientBackground, TextInput, Button, Text } from '@components';
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
@@ -7,6 +7,7 @@ import { Auth } from "aws-amplify";
 import OtpInputs from 'react-native-otp-inputs';
 // import OTPInput from '@twotalltotems/react-native-otp-input'
 import styles from "./signup.styles";
+import { colors } from '@utils';
 
 
 type SignUpProps = {
@@ -25,7 +26,9 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     password: "12345678"
   });
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"signUp" | "otp">("otp");
+  const [step, setStep] = useState<"signUp" | "otp">("signUp");
+  const [confirming, setConfirming] = useState(false);
+  const [storeCode, setStoreCode] = useState<number>();
 
   const setFormInput = (key: keyof typeof form, value: string) => {
     setForm({...form, [key]: value});
@@ -35,7 +38,7 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     setLoading(true);
     const { username, password, email, name } = form;
     try {
-        const res = await Auth.signUp({
+        await Auth.signUp({
           username,
           password,
           attributes: {
@@ -43,21 +46,34 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
             name
           }
         });
-        console.log(res);
-    } catch (error) {
+        setStep("otp");
+      } catch (error) {
         Alert.alert("Error!", error.message || "An error has occurred!");
+        setStep("otp");
       }
       setLoading(false);
     };
 
-    const confirmCode = async (code: string) => {
-      try {
-        await Auth.confirmSignUp(form.username, code);
-        navigation.navigate("Login");
-        Alert.alert("Success!", "You can now login with your account!");
-      } catch (error) {
-        Alert.alert("Error!", error.message || "An error has occurred!");
+    const saveCode = (codeType: string) => {
+      let sumCode =+ codeType;
+      console.log("sumCode", sumCode);
+      setStoreCode(sumCode)
     }
+
+    const confirmCode = async () => {
+      
+      console.log("storeCode ", storeCode.length);
+      if(storeCode == "6") {
+        setConfirming(true);
+        try {
+          await Auth.confirmSignUp(form.username, storeCode);
+          navigation.navigate("Login");
+          Alert.alert("Success!", "You can now login with your account!");
+        } catch (error) {
+          Alert.alert("Error!", error.message || "An error has occurred!");
+        }
+        setConfirming(false);
+      }
   }
   return (
     <GradientBackground>
@@ -66,28 +82,27 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
           {
             step === "otp"
             &&
-              // <OTPInput
-              //   placeholderCharacter="0"
-              //   placeholderTextColor="#5d5379"
-              //   pinCount={6}
-              //   codeInputFieldStyle={styles.underlineStyleBase}
-              //   autoFocusOnLoad
-              //   codeInputHighlightStyle={styles.underlineStyleHighLighted}
-              //   // codeInputHighlightStyle={styles.otpActiveInputBox}
-              //   onCodeFilled = {(code => {
-              //       console.log(`Code is ${code}, you are good to go!`)
-              //   })}
-              // />
               <>
-                <Text>Enter the code that you received via email.</Text>
-                <OtpInputs
-                  placeholderTextColor="#5d5379"
-                  onChange = {code => {
-                    confirmCode(code);
+                <Text style={styles.optText}>Enter the code that you received via email.</Text>
+                <Button
+                  onPress = {code => {
+                      confirmCode(code);
                   }}
-                  style={styles.otpInputBox}
-                  numberOfInputs={6}
-                />
+                  title={'Send code'} />
+                {confirming ? (
+                  <ActivityIndicator color={colors.lightGreen} />
+                ) :
+                (
+                  <OtpInputs
+                    placeholderTextColor="#5d5379"
+                    onChangeText = {code => {
+                      saveCode(code);
+                    }}
+                    style={styles.otpInputBox}
+                    numberOfInputs={6}
+                    />
+                    )
+                }
               </>
           }
           {
