@@ -4,7 +4,6 @@ import { GradientBackground, TextInput, Button, Text } from '@components';
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
-import OtpInputs from 'react-native-otp-inputs';
 // import OTPInput from '@twotalltotems/react-native-otp-input'
 import styles from "./signup.styles";
 import { colors } from '@utils';
@@ -28,7 +27,7 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<"signUp" | "otp">("signUp");
   const [confirming, setConfirming] = useState(false);
-  const [storeCode, setStoreCode] = useState<number>();
+  const [storeCode, setStoreCode] = useState<string | number>("");
 
   const setFormInput = (key: keyof typeof form, value: string) => {
     setForm({...form, [key]: value});
@@ -55,15 +54,16 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     };
 
     const saveCode = (codeType: string) => {
-      let sumCode =+ codeType;
-      console.log("sumCode", sumCode);
-      setStoreCode(sumCode)
+      console.log("codeType", codeType);
+      console.log("storeCode", storeCode);
+      setStoreCode(codeType)
     }
 
     const confirmCode = async () => {
-      
-      console.log("storeCode ", storeCode.length);
-      if(storeCode == "6") {
+
+      console.log("confirmCode storeCode length", storeCode.length);
+      if(storeCode.length === 6) {
+        console.log("paso");
         setConfirming(true);
         try {
           await Auth.confirmSignUp(form.username, storeCode);
@@ -73,6 +73,8 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
           Alert.alert("Error!", error.message || "An error has occurred!");
         }
         setConfirming(false);
+      } else {
+        console.log("No paso");
       }
   }
   return (
@@ -84,25 +86,34 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
             &&
               <>
                 <Text style={styles.optText}>Enter the code that you received via email.</Text>
-                <Button
-                  onPress = {code => {
-                      confirmCode(code);
-                  }}
-                  title={'Send code'} />
                 {confirming ? (
                   <ActivityIndicator color={colors.lightGreen} />
                 ) :
                 (
-                  <OtpInputs
-                    placeholderTextColor="#5d5379"
-                    onChangeText = {code => {
-                      saveCode(code);
-                    }}
-                    style={styles.otpInputBox}
-                    numberOfInputs={6}
-                    />
+                  <TextInput
+                      value={storeCode}
+                      onChangeText={(code) => {
+                        saveCode(code);
+                      }}
+                      style={{ marginTop: 10 }}
+                      placeholder="OTP Code"
+                      placeholderTextColor="#5d5379"
+                  />
+                  // <OTPInput
+                  //   placeholderTextColor="#5d5379"
+                  //   onChangeText = {code => {
+                  //     saveCode(code);
+                  //   }}
+                  //   style={styles.otpInputBox}
+                  //   numberOfInputs={6}
+                  //   />
                     )
                 }
+                <Button
+                  style={{ marginTop: 30 }}
+                  onPress = {confirmCode}
+                  title={'Send code'}
+                />
               </>
           }
           {

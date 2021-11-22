@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     borderColor: colors.lightGreen,
   },
   optText: {
-    color: colors.lightGreen
+    color: colors.lightGreen,
+    marginBottom: 10
   }
   // otpActiveInputBox: {
   //   borderWidth: 1,
