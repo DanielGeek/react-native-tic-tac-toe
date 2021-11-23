@@ -1,10 +1,11 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, TextInput as NativeTextInput } from 'react-native';
 import { GradientBackground, TextInput, Button, Text } from '@components';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
 import styles from "./login.styles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type LoginProps = {
   navigation: StackNavigationProp<StackNavigatorParams, "Login">;
@@ -45,7 +46,12 @@ export default function login({navigation}: LoginProps): ReactElement {
         await Auth.signIn(username, password);
         navigation.navigate("Home");
     } catch (error) {
-        Alert.alert("Error!", error.message || "An error has occurred!");
+        if(error.code === "UserNotConfirmedException") {
+            navigation.navigate("SignUp", {username});
+        } else {
+          Alert.alert("Error!", error.message || "An error has occurred!");
+        }
+        console.log(error);
     }
     setLoading(false);
   }
