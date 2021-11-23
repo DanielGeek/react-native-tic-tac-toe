@@ -1,19 +1,23 @@
-import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, { ReactElement, useEffect, useRef, useState } from 'react';
+import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { GradientBackground, TextInput, Button, Text } from '@components';
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
 import { Auth } from "aws-amplify";
 // import OTPInput from '@twotalltotems/react-native-otp-input'
 import styles from "./signup.styles";
 import { colors } from '@utils';
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 
 type SignUpProps = {
   navigation: StackNavigationProp<StackNavigatorParams, "SignUp">;
+  route: RouteProp<StackNavigatorParams, "SignUp">
 };
 
-export default function SignUp({navigation}: SignUpProps): ReactElement {
+export default function SignUp({navigation, route}: SignUpProps): ReactElement {
+  const unconfirmedUsername = route.params?.username;
   const headerHeight = useHeaderHeight();
   const passwordRef = useRef<NativeTextInput | null>(null);
   const emailRef = useRef<NativeTextInput | null>(null);
@@ -25,7 +29,7 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     password: "12345678"
   });
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<"signUp" | "otp">("signUp");
+  const [step, setStep] = useState<"signUp" | "otp">(unconfirmedUsername ? "otp" : "signUp");
   const [confirming, setConfirming] = useState(false);
   const [storeCode, setStoreCode] = useState<string | number>("");
   const [resending, setResending] = useState(false);
@@ -67,7 +71,7 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
         console.log("paso");
         setConfirming(true);
         try {
-          await Auth.confirmSignUp(form.username, storeCode);
+          await Auth.confirmSignUp(form.username || unconfirmedUsername || "", storeCode);
           navigation.navigate("Login");
           Alert.alert("Success!", "You can now login with your account!");
         } catch (error) {
@@ -88,6 +92,12 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
     }
     setResending(false);
   }
+
+  useEffect(() => {
+    if(unconfirmedUsername) {
+      resendCode(unconfirmedUsername);
+    }
+  }, [])
   return (
     <GradientBackground>
       <KeyboardAvoidingView keyboardVerticalOffset={headerHeight} behavior={ Platform.OS === "ios" ? "padding": "height" } style={{ flex: 1 }}>
@@ -114,7 +124,15 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
                     {resending ? (
                       <ActivityIndicator color={colors.lightGreen} />
                     ) : (
-                        <TouchableOpacity onPress={() => { resendCode(form.username) }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                              if(form.username) {
+                                resendCode(form.username);
+                              }
+                              if(unconfirmedUsername) {
+                                resendCode(unconfirmedUsername);
+                              }
+                            }}>
                           <Text style={styles.resendLink}>Resend Code</Text>
                         </TouchableOpacity>
                     )}
