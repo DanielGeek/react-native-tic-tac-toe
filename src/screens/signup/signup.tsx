@@ -1,5 +1,5 @@
 import React, { ReactElement, useRef, useState } from 'react';
-import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
+import { Alert, ScrollView, TextInput as NativeTextInput, KeyboardAvoidingView, Platform, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { GradientBackground, TextInput, Button, Text } from '@components';
 import { StackNavigationProp, useHeaderHeight } from "@react-navigation/stack";
 import { StackNavigatorParams } from "@config/navigator";
@@ -28,6 +28,7 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
   const [step, setStep] = useState<"signUp" | "otp">("signUp");
   const [confirming, setConfirming] = useState(false);
   const [storeCode, setStoreCode] = useState<string | number>("");
+  const [resending, setResending] = useState(false);
 
   const setFormInput = (key: keyof typeof form, value: string) => {
     setForm({...form, [key]: value});
@@ -77,6 +78,16 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
         console.log("No paso");
       }
   }
+
+  const resendCode = async (username: string) => {
+    setResending(true);
+    try {
+      await Auth.resendSignUp(username);
+    } catch (error) {
+      Alert.alert("Error!", error.message || "An error has occurred!");
+    }
+    setResending(false);
+  }
   return (
     <GradientBackground>
       <KeyboardAvoidingView keyboardVerticalOffset={headerHeight} behavior={ Platform.OS === "ios" ? "padding": "height" } style={{ flex: 1 }}>
@@ -90,23 +101,24 @@ export default function SignUp({navigation}: SignUpProps): ReactElement {
                   <ActivityIndicator color={colors.lightGreen} />
                 ) :
                 (
-                  <TextInput
-                      value={storeCode}
-                      onChangeText={(code) => {
-                        saveCode(code);
-                      }}
-                      style={{ marginTop: 10 }}
-                      placeholder="OTP Code"
-                      placeholderTextColor="#5d5379"
-                  />
-                  // <OTPInput
-                  //   placeholderTextColor="#5d5379"
-                  //   onChangeText = {code => {
-                  //     saveCode(code);
-                  //   }}
-                  //   style={styles.otpInputBox}
-                  //   numberOfInputs={6}
-                  //   />
+                  <>
+                    <TextInput
+                        value={storeCode}
+                        onChangeText={(code) => {
+                          saveCode(code);
+                        }}
+                        style={{ marginTop: 10, marginBottom: 10 }}
+                        placeholder="OTP Code"
+                        placeholderTextColor="#5d5379"
+                    />
+                    {resending ? (
+                      <ActivityIndicator color={colors.lightGreen} />
+                    ) : (
+                        <TouchableOpacity onPress={() => { resendCode(form.username) }}>
+                          <Text style={styles.resendLink}>Resend Code</Text>
+                        </TouchableOpacity>
+                    )}
+                  </>
                     )
                 }
                 <Button

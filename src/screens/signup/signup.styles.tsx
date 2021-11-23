@@ -19,6 +19,11 @@ const styles = StyleSheet.create({
   optText: {
     color: colors.lightGreen,
     marginBottom: 10
+  },
+  resendLink: {
+    color: colors.lightGreen,
+    textAlign: "center",
+    textDecorationLine: "underline"
   }
   // otpActiveInputBox: {
   //   borderWidth: 1,

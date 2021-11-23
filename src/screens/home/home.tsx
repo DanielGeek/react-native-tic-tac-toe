@@ -51,7 +51,7 @@ export default function Home({ navigation }: HomeProps): ReactElement {
                               style={styles.button}
                               title="Settings" />
                               {user && (
-                                    <Text weight="400" style={styles.loggedInText}>Logged in as<Text weight="700">{user.username}</Text></Text>
+                                    <Text weight="400" style={styles.loggedInText}>Logged in as <Text weight="700">{user.username}</Text></Text>
                               )
                               }
                   </View>
