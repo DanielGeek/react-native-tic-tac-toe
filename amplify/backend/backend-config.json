@@ -39,18 +39,7 @@
               "userPoolId": "authreactnativetictactoec9993a99"
             }
           },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "API_KEY",
-              "apiKeyConfig": {
-                "apiKeyExpirationDays": 7,
-                "description": "test"
-              }
-            },
-            {
-              "authenticationType": "AWS_IAM"
-            }
-          ]
+          "additionalAuthenticationProviders": []
         }
       }
     }
