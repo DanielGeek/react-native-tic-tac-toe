@@ -1,7 +1,7 @@
 {
     "expo": {
-        "name": "13-tic-tac-toe",
-        "slug": "13-tic-tac-toe",
+        "name": "tic-tac-toe",
+        "slug": "tic-tac-toe",
         "version": "1.0.0",
         "orientation": "portrait",
         "icon": "./assets/icon.png",

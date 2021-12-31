@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "api": {
+      "tictactoc": [
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
