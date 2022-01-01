@@ -1,5 +1,5 @@
+import { colors } from "@utils";
 import { StyleSheet } from "react-native";
-import { colors } from '@utils';
 
 const styles = StyleSheet.create({
     container: {
@@ -12,8 +12,7 @@ const styles = StyleSheet.create({
         resizeMode: "contain"
     },
     buttons: {
-        // TODO: change to 80
-        marginTop: 10
+        marginTop: 80
     },
     button: {
         marginBottom: 20
