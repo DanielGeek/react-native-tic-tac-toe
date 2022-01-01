@@ -18,7 +18,6 @@ export default function Text({ children, style, weight, ...props }: TextProps): 
     if (weight === "700") {
         fontFamily = "DeliusUnicase_700Bold";
     }
-
     return (
         <NativeText {...props} style={[{ fontFamily }, style]}>
             {children}
